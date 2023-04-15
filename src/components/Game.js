@@ -6,14 +6,14 @@ import {
   Button,
 } from '@mui/material/';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-function Game( {img, name, summary, rating} ) {
+function Game( { id, slug, img, name, summary, rating, release } ) {
 
-  //const imgUrl = oriUrl => oriUrl.replace('t_thumb', 't_cover_big')
   const displayScore = oriSorce => (Math.round(oriSorce * 100) / 100).toFixed(2)
-  const shortDes = summary.length < 280
+  const shortDes = !summary || summary.length < 280
   const shortSummary = oriSummary => {
-    if(oriSummary.length < 280) {
+    if(!summary || oriSummary.length < 280) {
       return oriSummary
     }
     else {
@@ -27,18 +27,20 @@ function Game( {img, name, summary, rating} ) {
 
   return (
     <Card sx={{ display: 'flex', marginTop: '10px', maxWidth: 'md' }}>
-      <CardMedia
-        component="img"
-        // image={`https:${imgUrl(img)}`}
-        //image="https://images.igdb.com/igdb/image/upload/t_cover_big/co272w.jpg"
-        image={img}
-        alt="game cover image"
-        sx={{width: "120px", height: "160px", marginTop: '20px' }}
-      />
+      <Link to={`/games/${id}-${slug}`}>
+        <CardMedia
+          component="img"
+          image={img}
+          alt="game cover image"
+          sx={{width: "120px", height: "160px", marginTop: '20px' }}
+        />
+      </Link>
       <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h6">
-          {name}
-        </Typography>
+        <Link to={`/games/${id}-${slug}`}>
+          <Typography variant="h6">
+              {name} ({(new Date(release*1000)).getFullYear()})
+          </Typography>
+        </Link>
         <Typography variant="body1" sx={{ flexGrow: 1 }}>
           {showFullText ? summary : shortSummary(summary)}
         </Typography>
