@@ -8,9 +8,9 @@ import {
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function Game( { id, slug, img, name, summary, rating, release } ) {
+function Game( { id, slug, img, name, summary, rating, release, ranking, offset } ) {
 
-  const displayScore = oriSorce => (Math.round(oriSorce * 100) / 100).toFixed(2)
+  //const displayScore = oriSorce => (Math.round(oriSorce * 100) / 100).toFixed(2)
   const shortDes = !summary || summary.length < 280
   const shortSummary = oriSummary => {
     if(!summary || oriSummary.length < 280) {
@@ -26,8 +26,9 @@ function Game( { id, slug, img, name, summary, rating, release } ) {
   };
 
   return (
-    <Card sx={{ display: 'flex', marginTop: '10px', maxWidth: 'md' }}>
-      <Link to={`/games/${id}-${slug}`}>
+    <Card sx={{ display: 'flex', marginTop: '10px' }}>
+      {/* <Link to={`/games/${id}-${slug}`}> */}
+      <Link to={`/games/${id}`}>
         <CardMedia
           component="img"
           image={img}
@@ -36,12 +37,13 @@ function Game( { id, slug, img, name, summary, rating, release } ) {
         />
       </Link>
       <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Link to={`/games/${id}-${slug}`}>
-          <Typography variant="h6">
+        {/* <Link to={`/games/${id}-${slug}`}> */}
+        <Link to={`/games/${id}`}>
+          <Typography variant="h6" sx={{ '@media (max-width: 900px)': { fontSize: '1.0rem' } }}>
               {name} ({(new Date(release*1000)).getFullYear()})
           </Typography>
         </Link>
-        <Typography variant="body1" sx={{ flexGrow: 1 }}>
+        <Typography variant="body1" sx={{ flexGrow: 1, '@media (max-width: 900px)': { fontSize: '0.8em' } }}>
           {showFullText ? summary : shortSummary(summary)}
         </Typography>
         {
@@ -50,9 +52,9 @@ function Game( { id, slug, img, name, summary, rating, release } ) {
             {showFullText ? 'Read Less' : 'Read More'}
           </Button>
         }
-        <Typography variant="body2" sx={{ justifySelf: 'end' }}>
-          Rating: {displayScore(rating)}
-        </Typography>
+        {/* <Typography variant="body2" sx={{ justifySelf: 'end' }}>
+          Current Ranking: {offset+ranking+1}
+        </Typography> */}
       </CardContent>
     </Card>
   )

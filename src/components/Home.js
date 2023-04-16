@@ -8,7 +8,7 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
 function Home() {
   return (
-    <Container component="main" maxWidth="lg">
+    <Container component="main">
       <Box
         sx={{
         marginTop: '30px',

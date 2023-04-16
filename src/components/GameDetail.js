@@ -13,14 +13,16 @@ import StarIcon from '@mui/icons-material/Star';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import LoadingInfo from './LoadingInfo';
+import VideoPlayer from './VideoPlayer';
+import { Link } from 'react-router-dom';
 
 function GameDetail() {
   let params = useParams()
-  const getID = gamaParams => {
-    const index = gamaParams.indexOf("-")
-    const gameID = gamaParams.slice(0,index)
-    return gameID
-  }
+  // const getID = gamaParams => {
+  //   const index = gamaParams.indexOf("-")
+  //   const gameID = gamaParams.slice(0,index)
+  //   return gameID
+  // }
   const convertScale = score => (score/100) * 5
   const displayScore = oriSorce => (Math.round(oriSorce * 100) / 100).toFixed(2)
   const clientID = process.env.REACT_APP_IGDB_CLIENT_ID
@@ -29,14 +31,20 @@ function GameDetail() {
   const [currentGame, setCurrentGame] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [screenShots, setScreenShots] = useState([])
+  const [similarGames, setSimilarGames] = useState([])
+  const [similarId, setSimilarId] = useState([])
+  const [videoUrl, setVideoUrl] = useState("")
 
   useEffect(() => {
+    setSimilarId([])
+    setIsLoading(true)
     let myHeaders = new Headers();
     myHeaders.append("Client-ID", clientID);
     myHeaders.append("Authorization", auth);
     myHeaders.append("Content-Type", "text/plain");
     
-    const raw = `fields *; where id=${getID(params.gameID)};`;
+    //const raw = `fields *; where id=${getID(params.gameID)};`;
+    const raw = `fields *; where id=${params.gameID};`;
     
     const requestOptions = {
       method: 'POST',
@@ -59,30 +67,67 @@ function GameDetail() {
       .then(data => {
         game = data[0]
         const sql = `fields url; where game=${game.id};`
+        const sql1 = `fields video_id; where game=${game.id};`
+        const similarGames = game.similar_games
+        //console.log(similarGames)
+        setSimilarId(similarGames)
+        let similarCover, requestOptionsCover, promisesCover
         const requestOtherEndPoints = {
           method: 'POST',
           headers: myHeaders,
           body: sql,
           redirect: 'follow',
         }
+        const requestOtherEndPoints1 = {
+          method: 'POST',
+          headers: myHeaders,
+          body: sql1,
+          redirect: 'follow',
+        }
         const resCover = fetch(corsProxy+"https://api.igdb.com/v4/covers", requestOtherEndPoints)
         const resScreenshot = fetch(corsProxy+"https://api.igdb.com/v4/screenshots", requestOtherEndPoints)
-        return Promise.all([resCover, resScreenshot])
+        const resVideo = fetch(corsProxy+"https://api.igdb.com/v4/game_videos", requestOtherEndPoints1)
+        if(similarGames){
+          similarCover = similarGames.map(id => `fields url; where game=${id};`)
+          requestOptionsCover = similarCover.map(sql => ({
+            method: 'POST',
+            headers: myHeaders,
+            body: sql,
+            redirect: 'follow',
+          })
+          )
+          promisesCover = requestOptionsCover.map(req => fetch(corsProxy+"https://api.igdb.com/v4/covers", req))
+          return Promise.all([resCover, resScreenshot, resVideo, ...promisesCover])
+        }
+        else {
+          return Promise.all([resCover, resScreenshot, resVideo])
+        }
       })
       .then(res => {
         // Get a JSON object from each of the responses
         return Promise.all(res.map(res => res.json()));
       })
       .then(data => {
-        const gamesWithUrl = {...game, url: `https:${data[0][0].url}`.replace('t_thumb', 't_cover_big'),}
-        //console.log(data[1])
+        let gamesWithUrl
+        if(data[0][0]){
+          gamesWithUrl = {...game, url: `https:${data[0][0].url}`.replace('t_thumb', 't_cover_big'),}
+        }
+        else {
+          gamesWithUrl = {...game, url: "#",}
+        }
+        if(data[2][0]) {
+          setVideoUrl(`https://www.youtube.com/watch?v=${data[2][0].video_id}`)
+        }
         setCurrentGame(gamesWithUrl)
         setScreenShots(data[1])
+        if(data.length>3){
+          setSimilarGames(data.slice(3).map(id=>id[0]))
+        }
         setIsLoading(false)
       })
       .catch(error => console.log('error', error));
     //eslint-disable-next-line
-  }, []);
+  }, [params]);
 
   //console.log("RENDER GameDetails!")
 
@@ -93,7 +138,7 @@ function GameDetail() {
   }
 
   return (
-    <Container component="main" maxWidth="xl">
+    <Container component="main">
       <Box
         sx={{
         marginTop: '30px',
@@ -102,12 +147,12 @@ function GameDetail() {
         justifyContent: 'start',
         }}
       >
-        <Card sx={{ display: 'flex', paddingBottom: '20px', maxWidth: 'xl' }}>
+        <Card sx={{ display: 'flex', paddingBottom: '20px', '@media (max-width: 700px)': { flexDirection: 'column' } }}>
           <CardMedia
             component="img"
             image={currentGame.url}
             alt="game cover image"
-            sx={{width: "264px", height: "374px", marginTop: '20px' }}
+            sx={{width: "264px", height: "374px", marginTop: '20px', '@media (max-width: 700px)': { width: "100%", height: "auto" } }}
           />
           <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Typography variant="h4">
@@ -132,17 +177,45 @@ function GameDetail() {
           </CardContent>
         </Card>
       </Box>
-      <Box sx={{ marginTop: '20px', display: 'flex' }}>
-        <ImageList cols={4}>
-          {screenShots.map((img) => (
-            <ImageListItem key={img.id}>
-              <img
-                src={`https:${img.url}`.replace('t_thumb', 't_screenshot_med')}
-                // srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                alt={img.id}
-                loading="lazy"
-              />
-            </ImageListItem>
+      <Typography variant='h5' sx={{ mt:'20px', textAlign:'center' }}>Screenshots</Typography>
+      <Box sx={{ display: 'flex' }}>
+        <ImageList cols={4} sx={{ width: '100%' }}>
+          {screenShots.map((img, index) => (
+              <ImageListItem key={`${img.id}-${index}`}>
+                <img
+                  src={`https:${img.url}`.replace('t_thumb', 't_screenshot_med')}
+                  // srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                  alt={img.id}
+                  loading="lazy"
+                />
+              </ImageListItem>
+            ))}
+        </ImageList>
+      </Box>
+      {
+        videoUrl ?
+        <>
+          <Typography variant='h5' sx={{ mt:'20px', textAlign:'center' }}>Video</Typography>
+          <Box sx={{ mt: '5px', display: 'flex', justifyContent: 'center'}}>
+            <VideoPlayer url={videoUrl}/>
+          </Box>
+        </>
+        : null
+      }
+      <Typography variant='h5' sx={{ mt:'20px', textAlign:'center' }}>You may also like</Typography>
+      <Box sx={{ display: 'flex' }}>
+        <ImageList cols={8} sx={{ width: '100%' }}>
+          {similarGames.map((img, index) => (
+            <Link to={`/games/${similarId[index]}`}>
+              <ImageListItem key={`${img.id}-${index}`}>
+                <img
+                  src={`https:${img.url}`.replace('t_thumb', 't_cover_big')}
+                  // srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                  alt={img.id}
+                  loading="lazy"
+                />
+              </ImageListItem>
+            </Link>
             ))}
         </ImageList>
       </Box>

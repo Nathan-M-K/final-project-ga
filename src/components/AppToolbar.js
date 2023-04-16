@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom';
 
 function AppToolbar() {
   return (
-    <AppBar sx={{ position: "static", maxWidth: "xl", margin: "0 auto", backgroundColor: 'neutral.main'}}>
+    <AppBar sx={{ position: "static", backgroundColor: 'neutral.main'}}>
       <Toolbar>
         <img
           alt='gaming logo'
-          src='/logo192.png'
+          src='/playtopia-logo.png'
           style={{ width: 48, height: 48, paddingRight: 24 }}
         />
         <Typography variant='h6' sx={{ flexGrow: 1 }}>
