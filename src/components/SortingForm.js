@@ -39,8 +39,8 @@ const SortingForm = ( { setSortByOptions, setSortOrder }) => {
           <MenuItem value="desc">Descending</MenuItem>
         </Select>
       </FormControl>
-      <Button type="submit" variant="contained" color="primary">
-        Submit
+      <Button fullWidth type="submit" variant="contained" color="primary">
+        Show me the games!
       </Button>
     </Box>
   );
