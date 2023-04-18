@@ -3,24 +3,26 @@ import { FormControl, InputLabel, Select, MenuItem, Button, Box } from "@mui/mat
 
 const SortingForm = ( { setSortByOptions, setSortOrder }) => {
   const [sortBy, setSortBy] = useState("");
-  const [order, setOrder] = useState("");
+  //const [order, setOrder] = useState("");
 
   const handleSortByChange = (event) => {
     setSortBy(event.target.value);
   };
 
-  const handleOrderChange = (event) => {
-    setOrder(event.target.value);
-  };
+  // const handleOrderChange = (event) => {
+  //   setOrder(event.target.value);
+  // };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(sortBy){
-      setSortByOptions(sortBy)
-    }
-    if(order){
-      setSortOrder(order)
-    }
+    setSortByOptions(sortBy.slice(0,sortBy.indexOf('-')))
+    setSortOrder(sortBy.slice(sortBy.indexOf('-')+1))
+    // if(sortBy){
+    //   setSortByOptions(sortBy)
+    // }
+    // if(order){
+    //   setSortOrder(order)
+    // }
   };
 
   return (
@@ -28,17 +30,19 @@ const SortingForm = ( { setSortByOptions, setSortOrder }) => {
       <FormControl fullWidth size="small" sx={{ mb: '10px' }}>
         <InputLabel>Sort by</InputLabel>
         <Select value={sortBy} onChange={handleSortByChange}>
-          <MenuItem value="total_rating">Rating</MenuItem>
-          <MenuItem value="first_release_date">Release Date</MenuItem>
+          <MenuItem value="first_release_date-desc">Release Date: Newest first</MenuItem>
+          <MenuItem value="total_rating-desc">Rating: High to low</MenuItem>
+          <MenuItem value="total_rating-asc">Rating: Low to high</MenuItem>
+          <MenuItem value="first_release_date-asc">Release Date: Oldest first</MenuItem>
         </Select>
       </FormControl>
-      <FormControl fullWidth size="small" sx={{ mb: '10px',}}>
+      {/* <FormControl fullWidth size="small" sx={{ mb: '10px',}}>
         <InputLabel>Order</InputLabel>
         <Select value={order} onChange={handleOrderChange}>
           <MenuItem value="asc">Ascending</MenuItem>
           <MenuItem value="desc">Descending</MenuItem>
         </Select>
-      </FormControl>
+      </FormControl> */}
       <Button fullWidth type="submit" variant="contained" color="primary">
         Show me the games!
       </Button>

@@ -8,6 +8,7 @@ import {
   Rating,
   ImageList,
   ImageListItem,
+  Modal,
 } from '@mui/material/';
 import StarIcon from '@mui/icons-material/Star';
 import { useParams } from 'react-router-dom';
@@ -34,6 +35,29 @@ function GameDetail() {
   const [similarGames, setSimilarGames] = useState([])
   const [similarId, setSimilarId] = useState([])
   const [videoUrl, setVideoUrl] = useState("")
+  const [open, setOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleOpen = (image) => {
+    setSelectedImage(image);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setSelectedImage(null);
+    setOpen(false);
+  };
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    //maxWidth: '100%',
+    bgcolor: 'background.paper',
+    //border: '2px solid #000',
+    //boxShadow: 24,
+  };
 
   useEffect(() => {
     setSimilarId([])
@@ -184,14 +208,24 @@ function GameDetail() {
               <ImageListItem key={`${img.id}-${index}`}>
                 <img
                   src={`https:${img.url}`.replace('t_thumb', 't_screenshot_med')}
-                  // srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                   alt={img.id}
                   loading="lazy"
+                  onClick={() => handleOpen(img)}
                 />
               </ImageListItem>
             ))}
         </ImageList>
       </Box>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <img src={`https:${selectedImage?.url}`.replace('t_thumb', 't_screenshot_huge')} alt={selectedImage?.id} style={{ maxWidth: '100%', minWidth: '400px' }} />
+        </Box>
+      </Modal>
       {
         videoUrl ?
         <>
@@ -210,7 +244,6 @@ function GameDetail() {
               <ImageListItem key={`${img.id}-${index}`}>
                 <img
                   src={`https:${img.url}`.replace('t_thumb', 't_cover_big')}
-                  // srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                   alt={img.id}
                   loading="lazy"
                 />
