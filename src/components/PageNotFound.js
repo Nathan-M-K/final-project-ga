@@ -11,7 +11,7 @@ function PageNotFound() {
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
-        marginTop: '30px',
+        marginTop: 20,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

@@ -13,7 +13,7 @@ function LoadingInfo() {
     <Container component="main" maxWidth="xl">
       <Box
         sx={{
-        marginTop: '30px',
+        marginTop: 20,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

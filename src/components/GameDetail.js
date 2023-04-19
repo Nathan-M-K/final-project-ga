@@ -241,7 +241,7 @@ function GameDetail() {
         <ImageList cols={8} sx={{ width: '100%' }}>
           {similarGames.map((img, index) => (
             <Link to={`/games/${similarId[index]}`}>
-              <ImageListItem key={`${img.id}-${index}`}>
+              <ImageListItem key={`${img.id}-${index}--${index}`}>
                 <img
                   src={`https:${img.url}`.replace('t_thumb', 't_cover_big')}
                   alt={img.id}
