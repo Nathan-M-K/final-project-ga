@@ -38,7 +38,7 @@ function Game( { id, slug, img, name, summary, rating, release, ranking, offset 
       </Link>
       <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
         {/* <Link to={`/games/${id}-${slug}`}> */}
-        <Link to={`/games/${id}`}>
+        <Link to={`/games/${id}`} style={{ textDecoration: "none" }}>
           <Typography variant="h6" sx={{ '@media (max-width: 900px)': { fontSize: '1.0rem' } }}>
               {name} ({(new Date(release*1000)).getFullYear()})
           </Typography>
