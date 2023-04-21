@@ -1,7 +1,6 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   Container,
   CssBaseline,
@@ -14,7 +13,7 @@ import { useState } from 'react';
 function AppToolbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const options = searchResults.map((result) => ({ path: `/games/${result.id}`, name: result.name}));
+  const options = searchResults.map((result) => ({ path: `/games/${result.id}`, name: result.name, first_release_date: result.first_release_date}));
   const clientID = process.env.REACT_APP_IGDB_CLIENT_ID
   const auth = process.env.REACT_APP_IGDB_AUTH
   const corsProxy = process.env.REACT_APP_IGDB_CORS
@@ -27,7 +26,7 @@ function AppToolbar() {
     myHeaders.append("Client-ID", clientID);
     myHeaders.append("Authorization", auth);
     myHeaders.append("Content-Type", "text/plain");
-    const raw = `fields name; search "${value}";`
+    const raw = `fields name, first_release_date; search "${value}";`
     const requestOptions = {
       method: 'POST',
       headers: myHeaders,
@@ -53,16 +52,18 @@ function AppToolbar() {
         <AppBar sx={{ position: "static", backgroundColor: 'neutral.main'}}>
           <Container maxWidth="lg">
             <Toolbar>
-              <img
-                alt='gaming logo'
-                src='/playtopia-logo.png'
-                style={{ width: 48, height: 48}}
-              />
               <Link to="/" style={{ textDecoration: "none", color: "#fff" }}>
+                <img
+                  alt='gaming logo'
+                  src='/playtopia-logo.png'
+                  style={{ width: 48, height: 48}}
+                />
+              </Link>
+              {/* <Link to="/" style={{ textDecoration: "none", color: "#fff" }}>
                 <Typography variant='h6'>
                   Playtopia
                 </Typography>
-              </Link>
+              </Link> */}
               <Autocomplete
                 freeSolo
                 options={options}
@@ -83,13 +84,13 @@ function AppToolbar() {
                 )}
                 renderOption={(props, option) => (
                   <li key={`${option.name}-${option.path}`} {...props}>
-                    <Link to={option.path} style={{ textDecoration: "none" }}>
-                      {option.name}
+                    <Link to={option.path} style={{ textDecoration: "none", fontSize: '0.8rem' }}>
+                      {`${option.name} (${(new Date(option.first_release_date*1000)).toLocaleDateString()})`}
                     </Link>
                   </li>
                 )}
               />
-              <Button color='nav' size='large' component={Link} to={'/'}>Home</Button>
+              {/* <Button color='nav' size='large' component={Link} to={'/'}>Home</Button> */}
               <Button color='nav' size='large' component={Link} to={'/games'}>Games</Button>
             </Toolbar>
           </Container>

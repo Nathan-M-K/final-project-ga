@@ -53,7 +53,8 @@ function Game( { id, slug, img, name, summary, rating, release, platforms, offse
           flexWrap="wrap"
         >
           {platforms.map(platform =>
-          <Chip 
+          <Chip
+            key={platform}
             label={platformsData.find(element => element.id===platform).name}
             color="info"
             size="small"

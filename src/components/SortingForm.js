@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FormControl, InputLabel, Select, MenuItem, Button, Box } from "@mui/material/";
 
-const SortingForm = ( { setSortByOptions, setSortOrder }) => {
+const SortingForm = ( { setSortByOptions, setSortOrder, setCurrentPage, sortByOptions, sortOrder }) => {
   const [sortBy, setSortBy] = useState("");
   //const [order, setOrder] = useState("");
 
@@ -16,8 +16,11 @@ const SortingForm = ( { setSortByOptions, setSortOrder }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if(sortBy){
-      setSortByOptions(sortBy.slice(0,sortBy.indexOf('-')))
-      setSortOrder(sortBy.slice(sortBy.indexOf('-')+1))
+      if(sortByOptions!==sortBy.slice(0,sortBy.indexOf('-')) || sortOrder!==sortBy.slice(sortBy.indexOf('-')+1)){
+        setSortByOptions(sortBy.slice(0,sortBy.indexOf('-')))
+        setSortOrder(sortBy.slice(sortBy.indexOf('-')+1))
+        setCurrentPage(1)
+      }
     }
     // if(sortBy){
     //   setSortByOptions(sortBy)

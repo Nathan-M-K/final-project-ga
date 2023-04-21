@@ -148,7 +148,13 @@ function Games() {
           ml:'30px'
           }}>
           <Typography variant='h6'>Soring Options</Typography>
-          <SortingForm setSortByOptions={(value)=>setSortByOptions(value)} setSortOrder={(value)=>setSortOrder(value)} />
+          <SortingForm 
+            setSortByOptions={(value)=>setSortByOptions(value)}
+            setSortOrder={(value)=>setSortOrder(value)}
+            setCurrentPage={(value)=>setCurrentPage(value)}
+            sortByOptions={sortByOptions}
+            sortOrder={sortOrder}
+          />
         </Box>
       </Box>
     </Container>
