@@ -15,8 +15,10 @@ const SortingForm = ( { setSortByOptions, setSortOrder }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setSortByOptions(sortBy.slice(0,sortBy.indexOf('-')))
-    setSortOrder(sortBy.slice(sortBy.indexOf('-')+1))
+    if(sortBy){
+      setSortByOptions(sortBy.slice(0,sortBy.indexOf('-')))
+      setSortOrder(sortBy.slice(sortBy.indexOf('-')+1))
+    }
     // if(sortBy){
     //   setSortByOptions(sortBy)
     // }
@@ -28,8 +30,8 @@ const SortingForm = ( { setSortByOptions, setSortOrder }) => {
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: '10px', width: '300px' }}>
       <FormControl fullWidth size="small" sx={{ mb: '10px' }}>
-        <InputLabel>Sort by</InputLabel>
-        <Select value={sortBy} onChange={handleSortByChange}>
+        <InputLabel id="sort-by">Sort by</InputLabel>
+        <Select labelId="sort-by" value={sortBy} label="Sort by" onChange={handleSortByChange}>
           <MenuItem value="first_release_date-desc">Release Date: Newest first</MenuItem>
           <MenuItem value="total_rating-desc">Rating: High to low</MenuItem>
           <MenuItem value="total_rating-asc">Rating: Low to high</MenuItem>

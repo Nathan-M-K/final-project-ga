@@ -39,7 +39,7 @@ function Games() {
     myHeaders.append("Content-Type", "text/plain");
     
     
-    const raw = `fields name, cover, slug, storyline, summary, total_rating, first_release_date; sort ${sortByOptions} ${sortOrder}; where total_rating != null & total_rating_count >= 100; limit ${pageSize}; offset ${offset};`;
+    const raw = `fields name, cover, slug, storyline, summary, total_rating, first_release_date, platforms; sort ${sortByOptions} ${sortOrder}; where total_rating != null & total_rating_count >= 100; limit ${pageSize}; offset ${offset};`;
     
     const requestOptions = {
       method: 'POST',
@@ -124,7 +124,7 @@ function Games() {
           }}
         >
           <Typography variant='h6'>Games with 100 minimum rating counts</Typography>
-            {allGames.map((game,index) => 
+            {allGames.map(game => 
               <Game 
                 key={game.id}
                 id={game.id}
@@ -134,7 +134,7 @@ function Games() {
                 summary={game.summary}
                 rating={game.total_rating}
                 release={game.first_release_date}
-                ranking={index}
+                platforms={game.platforms}
                 offset={offset}
               />
             )}

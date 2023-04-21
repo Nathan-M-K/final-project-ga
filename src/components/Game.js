@@ -4,20 +4,23 @@ import {
   CardContent,
   CardMedia,
   Button,
+  Chip,
+  Stack,
 } from '@mui/material/';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { platformsData } from '../platformsData';
 
-function Game( { id, slug, img, name, summary, rating, release, ranking, offset } ) {
+function Game( { id, slug, img, name, summary, rating, release, platforms, offset } ) {
 
   //const displayScore = oriSorce => (Math.round(oriSorce * 100) / 100).toFixed(2)
-  const shortDes = !summary || summary.length < 280
+  const shortDes = !summary || summary.length < 150
   const shortSummary = oriSummary => {
-    if(!summary || oriSummary.length < 280) {
+    if(!summary || oriSummary.length < 150) {
       return oriSummary
     }
     else {
-      return `${oriSummary.slice(0, 280)}...`
+      return `${oriSummary.slice(0, 150)}...`
     }
   }
   const [showFullText, setShowFullText] = useState(false);
@@ -43,7 +46,22 @@ function Game( { id, slug, img, name, summary, rating, release, ranking, offset 
               {name} ({(new Date(release*1000)).getFullYear()})
           </Typography>
         </Link>
-        <Typography variant="body1" sx={{ flexGrow: 1, '@media (max-width: 900px)': { fontSize: '0.8em' } }}>
+        <Stack
+          spacing={0.5}
+          direction="row"
+          useFlexGap
+          flexWrap="wrap"
+        >
+          {platforms.map(platform =>
+          <Chip 
+            label={platformsData.find(element => element.id===platform).name}
+            color="info"
+            size="small"
+            sx={{ '@media (max-width: 900px)': { fontSize: '0.6rem' } }}
+          />
+        )}
+        </Stack>
+        <Typography variant="body1" sx={{ flexGrow: 1, '@media (max-width: 900px)': { fontSize: '0.9rem' } }}>
           {showFullText ? summary : shortSummary(summary)}
         </Typography>
         {
@@ -52,9 +70,6 @@ function Game( { id, slug, img, name, summary, rating, release, ranking, offset 
             {showFullText ? 'Read Less' : 'Read More'}
           </Button>
         }
-        {/* <Typography variant="body2" sx={{ justifySelf: 'end' }}>
-          Current Ranking: {offset+ranking+1}
-        </Typography> */}
       </CardContent>
     </Card>
   )

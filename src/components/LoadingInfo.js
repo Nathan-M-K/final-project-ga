@@ -37,7 +37,7 @@ function LoadingInfo() {
               }}
           />
         </Box>
-        <Typography variant='h5' sx={{ marginTop:'30px' }}>
+        <Typography variant='h6' sx={{ marginTop:'30px' }}>
           Getting there...
         </Typography>
       </Box>

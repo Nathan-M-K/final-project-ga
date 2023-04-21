@@ -60,7 +60,11 @@ function GameDetail() {
   };
 
   useEffect(() => {
+    setCurrentGame([])
+    setScreenShots([])
+    setSimilarGames([])
     setSimilarId([])
+    setVideoUrl("")
     setIsLoading(true)
     let myHeaders = new Headers();
     myHeaders.append("Client-ID", clientID);
