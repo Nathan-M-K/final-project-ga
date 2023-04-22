@@ -37,8 +37,8 @@ const SortingForm = ( { setSortByOptions, setSortOrder, setCurrentPage, sortByOp
         <Select labelId="sort-by" value={sortBy} label="Sort by" onChange={handleSortByChange}>
           <MenuItem value="first_release_date-desc">Release Date: Newest first</MenuItem>
           <MenuItem value="total_rating-desc">Rating: High to low</MenuItem>
-          <MenuItem value="total_rating-asc">Rating: Low to high</MenuItem>
           <MenuItem value="first_release_date-asc">Release Date: Oldest first</MenuItem>
+          <MenuItem value="total_rating-asc">Rating: Low to high</MenuItem>
         </Select>
       </FormControl>
       {/* <FormControl fullWidth size="small" sx={{ mb: '10px',}}>

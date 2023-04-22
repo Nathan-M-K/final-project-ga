@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import LoadingInfo from './LoadingInfo';
 import VideoPlayer from './VideoPlayer';
 import { Link } from 'react-router-dom';
+import { platformsData } from '../platformsData';
 
 function GameDetail() {
   let params = useParams()
@@ -198,6 +199,9 @@ function GameDetail() {
             </Typography>
             <Typography variant="subtitle2">
               Releast Date:  {(new Date(currentGame.first_release_date*1000)).toLocaleDateString()}
+            </Typography>
+            <Typography variant="subtitle2">
+              Platforms: {currentGame.platforms.map(platform => `${platformsData.find(element => element.id===platform).name}, `)}
             </Typography>
             <Typography variant="body2">
                 {!currentGame.storyline ? currentGame.summary : currentGame.storyline}

@@ -6,14 +6,17 @@ import {
   Button,
   Chip,
   Stack,
+  Rating,
 } from '@mui/material/';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { platformsData } from '../platformsData';
+import StarIcon from '@mui/icons-material/Star';
 
 function Game( { id, slug, img, name, summary, rating, release, platforms, offset } ) {
 
   //const displayScore = oriSorce => (Math.round(oriSorce * 100) / 100).toFixed(2)
+  const convertScale = score => (score/100) * 5
   const shortDes = !summary || summary.length < 150
   const shortSummary = oriSummary => {
     if(!summary || oriSummary.length < 150) {
@@ -43,7 +46,14 @@ function Game( { id, slug, img, name, summary, rating, release, platforms, offse
         {/* <Link to={`/games/${id}-${slug}`}> */}
         <Link to={`/games/${id}`} style={{ textDecoration: "none" }}>
           <Typography variant="h6" sx={{ '@media (max-width: 900px)': { fontSize: '1.0rem' } }}>
-              {name} ({(new Date(release*1000)).getFullYear()})
+              {name} ({(new Date(release*1000)).getFullYear()}) <Rating
+              name="game-rating"
+              size="small"
+              value={convertScale(rating)}
+              readOnly
+              precision={0.1}
+              emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+              />
           </Typography>
         </Link>
         <Stack
