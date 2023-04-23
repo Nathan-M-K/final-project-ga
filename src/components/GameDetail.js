@@ -59,10 +59,9 @@ function GameDetail() {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    //maxWidth: '100%',
     bgcolor: 'background.paper',
-    //border: '2px solid #000',
-    //boxShadow: 24,
+    border: '2px solid #000',
+    boxShadow: 24,
   };
 
   useEffect(() => {
@@ -102,9 +101,7 @@ function GameDetail() {
         game = data[0]
         const sql = `fields url; where game=${game.id};`
         const sql1 = `fields video_id; where game=${game.id};`
-        const similarGames = game.similar_games
-        //console.log(similarGames)
-        setSimilarId(similarGames)
+        setSimilarId(game.similar_games)
         let similarCover, requestOptionsCover, promisesCover
         const requestOtherEndPoints = {
           method: 'POST',
@@ -121,8 +118,8 @@ function GameDetail() {
         const resCover = fetch(corsProxy+"https://api.igdb.com/v4/covers", requestOtherEndPoints)
         const resScreenshot = fetch(corsProxy+"https://api.igdb.com/v4/screenshots", requestOtherEndPoints)
         const resVideo = fetch(corsProxy+"https://api.igdb.com/v4/game_videos", requestOtherEndPoints1)
-        if(similarGames){
-          similarCover = similarGames.map(id => `fields url; where game=${id};`)
+        if(game.similar_games){
+          similarCover = game.similar_games.map(id => `fields url; where game=${id};`)
           requestOptionsCover = similarCover.map(sql => ({
             method: 'POST',
             headers: myHeaders,
@@ -149,11 +146,13 @@ function GameDetail() {
         else {
           gamesWithUrl = {...game, url: "#",}
         }
-        if(data[2][0]) {
+        setCurrentGame(gamesWithUrl)
+        if(data[1][0]){
+          setScreenShots(data[1])
+        }
+        if(data[2][0]){
           setVideoUrl(`https://www.youtube.com/watch?v=${data[2][0].video_id}`)
         }
-        setCurrentGame(gamesWithUrl)
-        setScreenShots(data[1])
         if(data.length>3){
           setSimilarGames(data.slice(3).map(id=>id[0]))
         }
@@ -162,8 +161,6 @@ function GameDetail() {
       .catch(error => console.log('error', error));
     //eslint-disable-next-line
   }, [params]);
-
-  //console.log("RENDER GameDetails!")
 
   if(isLoading) {
     return(
@@ -205,12 +202,22 @@ function GameDetail() {
             <Typography variant="subtitle2">
               Releast Date:  {(new Date(currentGame.first_release_date*1000)).toLocaleDateString()}
             </Typography>
-            <Typography variant="subtitle2">
-              Platforms: {currentGame.platforms.map(platform => `${platformsData.find(element => element.id===platform).name}, `)}
-            </Typography>
-            <Typography variant="subtitle2">
-              Genres: {currentGame.genres.map(genre => `${genresData.find(element => element.id===genre).name}, `)}
-            </Typography>
+            {
+              currentGame.platforms ?
+              <Typography variant="subtitle2">
+                Platforms: {currentGame.platforms.map(platform => `${platformsData.find(element => element.id===platform).name}, `)}
+              </Typography>
+              :
+              null
+            }
+            {
+              currentGame.genres ?
+              <Typography variant="subtitle2">
+                Genres: {currentGame.genres.map(genre => `${genresData.find(element => element.id===genre).name}, `)}
+              </Typography>
+              :
+              null
+            }
             <Accordion elevation={0}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -233,31 +240,37 @@ function GameDetail() {
           </CardContent>
         </Card>
       </Box>
-      <Typography variant='h5' sx={{ mt:'20px', textAlign:'center' }}>Screenshots</Typography>
-      <Box sx={{ display: 'flex' }}>
-        <ImageList cols={4} sx={{ width: '100%' }}>
-          {screenShots.map((img, index) => (
-              <ImageListItem key={`${img.id}-${index}`}>
-                <img
-                  src={`https:${img.url}`.replace('t_thumb', 't_screenshot_med')}
-                  alt={img.id}
-                  loading="lazy"
-                  onClick={() => handleOpen(img)}
-                />
-              </ImageListItem>
-            ))}
-        </ImageList>
-      </Box>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <img src={`https:${selectedImage?.url}`.replace('t_thumb', 't_screenshot_huge')} alt={selectedImage?.id} style={{ maxWidth: '100%', minWidth: '400px' }} />
-        </Box>
-      </Modal>
+      {
+        screenShots[0] ?
+        <>
+          <Typography variant='h5' sx={{ mt:'20px', textAlign:'center' }}>Screenshots</Typography>
+          <Box sx={{ display: 'flex' }}>
+            <ImageList cols={4} sx={{ width: '100%' }}>
+              {screenShots.map((img, index) => (
+                  <ImageListItem key={`${img.id}-${index}`}>
+                    <img
+                      src={`https:${img.url}`.replace('t_thumb', 't_screenshot_med')}
+                      alt={img.id}
+                      loading="lazy"
+                      onClick={() => handleOpen(img)}
+                    />
+                  </ImageListItem>
+                ))}
+            </ImageList>
+          </Box>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <img src={`https:${selectedImage?.url}`.replace('t_thumb', 't_screenshot_huge')} alt={selectedImage?.id} style={{ maxWidth: '100%', minWidth: '400px' }} />
+            </Box>
+          </Modal>
+        </>
+        : null
+      }
       {
         videoUrl ?
         <>
@@ -268,22 +281,36 @@ function GameDetail() {
         </>
         : null
       }
-      <Typography variant='h5' sx={{ mt:'20px', textAlign:'center' }}>You may also like</Typography>
-      <Box sx={{ display: 'flex' }}>
-        <ImageList cols={8} sx={{ width: '100%' }}>
-          {similarGames.map((img, index) => (
-            <Link to={`/games/${similarId[index]}`}>
-              <ImageListItem key={`${img.id}-${index}-${index}`}>
-                <img
-                  src={`https:${img.url}`.replace('t_thumb', 't_cover_big')}
-                  alt={img.id}
-                  loading="lazy"
-                />
-              </ImageListItem>
-            </Link>
-            ))}
-        </ImageList>
-      </Box>
+      {
+        similarGames[0] ?
+        <>
+          <Typography variant='h5' sx={{ mt:'20px', textAlign:'center' }}>You may also like</Typography>
+          <Box sx={{ display: 'flex' }}>
+            <ImageList cols={8} sx={{ width: '100%' }}>
+              {similarGames.map((img, index) => {
+                  if(!img){
+                    return null
+                  }
+                  else{
+                    return(
+                      <Link to={`/games/${similarId[index]}`}>
+                        <ImageListItem key={`${img.id}-${index}-${index}`}>
+                          <img
+                            src={`https:${img.url}`.replace('t_thumb', 't_cover_big')}
+                            alt={img.id}
+                            loading="lazy"
+                          />
+                        </ImageListItem>
+                      </Link>
+                    )
+                  }
+                })
+              }
+            </ImageList>
+          </Box>
+        </>
+        :null
+      }
     </Container>
   )
 }

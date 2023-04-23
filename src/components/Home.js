@@ -5,17 +5,20 @@ import {
   Avatar,
 } from '@mui/material/';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import background from '../homepage-background.jpeg';
 
 function Home() {
   return (
-    <Container component="main">
+    <Container component="main" maxWidth={false} disableGutters>
       <Box
         sx={{
-        marginTop: 20,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundImage: `url(${background})`,
+          backgroundSize: "cover",
+          height: "86vh",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: 'primary.darker'}}>

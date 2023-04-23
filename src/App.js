@@ -16,9 +16,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Wrapper comp={<Home />} />} />
-        <Route path="/games" element={<Wrapper comp={<Games />} />} />
+        <Route path="/games-popular" element={<Wrapper comp={<Games category={"popular"} />} />} />
+        <Route path="/games-all" element={<Wrapper comp={<Games category={"all"} />} />} />
+        <Route path="/games/:gameID" element={<Wrapper comp={<GameDetail />} />} />
         <Route path="*" element={<Wrapper comp={<PageNotFound />} />} />
-        <Route path="/games/:gameID" element={<Wrapper comp={<GameDetail />} />}/>
       </Routes>
     </BrowserRouter>
   );

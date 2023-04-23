@@ -8,13 +8,12 @@ import Copyright from './Copyright';
 import { theme } from '../theme';
 
 function Wrapper(props) {
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline>
         <AppToolbar />
         {props.comp}
-        <Copyright sx={{ marginTop: '30px' }} />
+        <Copyright />   
       </CssBaseline>
     </ThemeProvider>
   )

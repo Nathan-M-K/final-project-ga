@@ -62,15 +62,20 @@ function Game( { id, slug, img, name, summary, rating, release, platforms, offse
           useFlexGap
           flexWrap="wrap"
         >
-          {platforms.map(platform =>
-          <Chip
-            key={platform}
-            label={platformsData.find(element => element.id===platform).name}
-            color="info"
-            size="small"
-            sx={{ '@media (max-width: 900px)': { fontSize: '0.6rem' } }}
-          />
-        )}
+        {
+          platforms?
+            platforms.map(platform =>
+              <Chip
+                key={platform}
+                label={platformsData.find(element => element.id===platform).name}
+                color="info"
+                size="small"
+                sx={{ '@media (max-width: 900px)': { fontSize: '0.6rem' } }}
+              />
+            )
+            : 
+            null
+        }
         </Stack>
         <Typography variant="body1" sx={{ flexGrow: 1, '@media (max-width: 900px)': { fontSize: '0.9rem' } }}>
           {showFullText ? summary : shortSummary(summary)}

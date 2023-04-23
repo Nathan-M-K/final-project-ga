@@ -10,13 +10,14 @@ import { green } from '@mui/material/colors';
 
 function LoadingInfo() {
   return(
-    <Container component="main" maxWidth="xl">
+    <Container component="main">
       <Box
         sx={{
-        marginTop: 20,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+          mt: '30px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          height: "58vh",
         }}
       >
         <Box sx={{ m: 1, position: 'relative' }}>
