@@ -9,6 +9,9 @@ import {
   ImageList,
   ImageListItem,
   Modal,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material/';
 import StarIcon from '@mui/icons-material/Star';
 import { useParams } from 'react-router-dom';
@@ -17,6 +20,8 @@ import LoadingInfo from './LoadingInfo';
 import VideoPlayer from './VideoPlayer';
 import { Link } from 'react-router-dom';
 import { platformsData } from '../platformsData';
+import { genresData } from '../genresData';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function GameDetail() {
   let params = useParams()
@@ -203,9 +208,28 @@ function GameDetail() {
             <Typography variant="subtitle2">
               Platforms: {currentGame.platforms.map(platform => `${platformsData.find(element => element.id===platform).name}, `)}
             </Typography>
-            <Typography variant="body2">
-                {!currentGame.storyline ? currentGame.summary : currentGame.storyline}
+            <Typography variant="subtitle2">
+              Genres: {currentGame.genres.map(genre => `${genresData.find(element => element.id===genre).name}, `)}
             </Typography>
+            <Accordion elevation={0}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="subtitle2" sx={{ width: '33%', flexShrink: 0 }}>Storyline:</Typography>
+                <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Please click to expand/collapse...</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="body2">
+                  {!currentGame.storyline ? currentGame.summary : currentGame.storyline}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* <Typography variant="body2">
+                {!currentGame.storyline ? currentGame.summary : currentGame.storyline}
+            </Typography> */}
           </CardContent>
         </Card>
       </Box>
