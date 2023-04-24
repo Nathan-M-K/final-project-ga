@@ -205,7 +205,15 @@ function GameDetail() {
             {
               currentGame.platforms ?
               <Typography variant="subtitle2">
-                Platforms: {currentGame.platforms.map(platform => `${platformsData.find(element => element.id===platform).name}, `)}
+                Platforms: {currentGame.platforms.map( (platform, index) => {
+                  if(index<currentGame.platforms.length-1){
+                    return `${platformsData.find(element => element.id===platform).name}, `
+                  }
+                  else{
+                    return `${platformsData.find(element => element.id===platform).name}`
+                  }
+                }  
+                )}
               </Typography>
               :
               null
@@ -213,7 +221,15 @@ function GameDetail() {
             {
               currentGame.genres ?
               <Typography variant="subtitle2">
-                Genres: {currentGame.genres.map(genre => `${genresData.find(element => element.id===genre).name}, `)}
+                Genres: {currentGame.genres.map( (genre, index) => {
+                  if(index<currentGame.genres.length-1){
+                    return `${genresData.find(element => element.id===genre).name}, `
+                  }
+                  else{
+                    return `${genresData.find(element => element.id===genre).name}`
+                  }
+                }
+                )}
               </Typography>
               :
               null

@@ -32,7 +32,7 @@ function SearchField() {
     myHeaders.append("Client-ID", clientID);
     myHeaders.append("Authorization", auth);
     myHeaders.append("Content-Type", "text/plain");
-    const raw = `fields name, first_release_date, total_rating; search "${value}";`
+    const raw = `fields name, first_release_date, total_rating; search "${value}"; limit 50;`
     const requestOptions = {
       method: 'POST',
       headers: myHeaders,
